@@ -54,7 +54,6 @@ public class GeneratePlaylist {
         
         SecureRandom random;
         boolean debug = false;
-        boolean fromhome = true;
         int numbertalk;
         public GeneratePlaylist()
         {
@@ -68,10 +67,7 @@ public class GeneratePlaylist {
         {
             try {
                 File file ;
-                if(fromhome)
-                    file = new File("D:\\Git\\Tropic-Island\\Tropic-Island\\Java\\Projects\\Example\\playlist4.m3u8");
-                else
-                    file = new File("C:\\Users\\Евгений\\Desktop\\Tropic-Island\\Tropic-Island\\Java\\Projects\\Example\\playlist4.m3u8");
+                file = new File("C:\\Users\\Администратор\\Desktop\\Git\\Programs\\Projects\\Example\\playlist4.m3u8");
             //создаем объект FileReader для объекта File
             //FileReader fr = new FileReader(file);
             
@@ -102,10 +98,7 @@ public class GeneratePlaylist {
            
             try {
                 File file;
-                if(fromhome)
-                    file = new File("C:\\Users\\User\\source\\repos\\Project1\\Project1\\playlist5.m3u8");
-                else
-                    file = new File("D:\\git\\Tropic-Island\\Tropic-Island\\Java\\Projects\\Example\\day of victory 5.m3u8");
+                   file = new File("C:\\Users\\Администратор\\Desktop\\Git\\Programs\\Projects\\Example\\playlist5.m3u8");
             //создаем объект FileReader для объекта File
             //FileReader fr = new FileReader(file);
             

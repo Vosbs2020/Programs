@@ -4,24 +4,6 @@
  * and open the template in the editor.
  */
 package example;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import org.apache.commons.codec.digest.DigestUtils;
-import java.util.*;
 /**
  *
  * @author User
@@ -101,9 +83,4 @@ public class Example {
         } //if  
     }
     */
-  
-    public static String md5Apache(String st) {
-        String md5Hex = DigestUtils.md5Hex(st);
-        return md5Hex;
-    }
 }
