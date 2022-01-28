@@ -1,4 +1,10 @@
 package example;
+import java.awt.Button;
+import java.awt.Dimension;
+import java.awt.FileDialog;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,6 +25,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagException;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -55,6 +77,7 @@ public class GeneratePlaylist {
         SecureRandom random;
         boolean debug = false;
         int numbertalk;
+        boolean custom = true;
         public GeneratePlaylist()
         {
             //music = new HashMap<Float, String>();
@@ -63,8 +86,44 @@ public class GeneratePlaylist {
             talk = new ArrayList<Type>();
             random = new SecureRandom(/*System.currentTimeMillis()*/);
         }
-        public void LoadFromFiles() throws FileNotFoundException, UnsupportedEncodingException, IOException
+        public void LoadFromFiles() throws FileNotFoundException, UnsupportedEncodingException, IOException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException
         {
+            JFrame frame = new JFrame();
+            frame.setLocation(0, 0);
+            frame.setSize(1800,300);
+            JButton button = new JButton("close");
+            JPanel panel = new JPanel();
+            panel.setSize(200,150);
+            panel.setLayout(null);
+            button.setBounds(10, 10, 70, 50);
+            
+            JButton button2 = new JButton("add directory");
+            button2.setBounds(100, 10, 70, 50);
+            JLabel label = new JLabel();
+            button.addActionListener(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        frame.dispose();
+                    }
+                    });
+            String pathToTalks;
+            button2.addActionListener(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent e)
+                    {
+                        JFileChooser fileopen = new JFileChooser();             
+                        int ret = fileopen.showDialog(null, "Открыть файл");                
+                        if (ret == JFileChooser.APPROVE_OPTION) {
+                            File file = fileopen.getSelectedFile();
+                            label.setText(file.getParent());
+                        }
+                    }});
+            label.setBounds(100, 80, 500, 20);
+            panel.add(label);
+            panel.add(button2);
+            panel.add(button);
+            
             try {
                 File file ;
                 file = new File("C:\\Users\\Администратор\\Desktop\\Git\\Programs\\Projects\\Example\\playlist4.m3u8");
@@ -95,10 +154,13 @@ public class GeneratePlaylist {
         } catch (IOException e) {
             e.printStackTrace();
         }
-           
+            
             try {
                 File file;
-                   file = new File("C:\\Users\\Администратор\\Desktop\\Git\\Programs\\Projects\\Example\\playlist5.m3u8");
+                if(custom)
+                   file = new File("C:\\Users\\Администратор\\Desktop\\Git\\Programs\\Projects\\Example\\New playlist talk.m3u8");
+                else
+                   file = new File("C:\\Users\\Администратор\\Desktop\\Git\\Programs\\Projects\\Example\\any.m3u8");    
             //создаем объект FileReader для объекта File
             //FileReader fr = new FileReader(file);
             
@@ -135,6 +197,33 @@ public class GeneratePlaylist {
         }
         Collections.sort(music);
         Collections.sort(talk);
+        if(!custom)
+        {
+            Object[] headers = {"track","length"};
+            Object[][] tracks = new Object[talk.size()][2];
+            for(int i=0;i<talk.size();i++)
+            {
+                tracks[i][0] = talk.get(i).name;
+                tracks[i][1] = talk.get(i).length; 
+            }
+            JTable table = new JTable(tracks,headers);
+            JScrollPane scroll = new JScrollPane(table);
+            //Устаналиваем размеры прокручиваемой области
+            table.setPreferredScrollableViewportSize(new Dimension(250, 100));
+            //Добавляем в контейнер нашу панель прокрути и таблицу вместе с ней
+            scroll.setBounds( 10, 120, 1500, 100 );
+            //panel.add(table);
+            frame.add(scroll); 
+            frame.add(panel);
+            frame.show();
+            Tag tag; 
+            java.util.logging.Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
+            for(int i=0;i<talk.size();i++)
+            {
+                AudioFile audioFile = AudioFileIO.read(new File(talk.get(i).name));
+                System.out.println("Track length = " + audioFile.getAudioHeader().getTrackLength());
+            }
+        }
         try(Writer shedulewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("Расписание работы радио"+".txt"), "windows-1251")))
         {
            shedulewriter.write("Расписание работы радио\n");
@@ -339,12 +428,15 @@ public class GeneratePlaylist {
             boolean b = false;
             for (int i = 0; i < 1; i++)
             {
-                /*
-		num = numbertalk++;
-                if(numbertalk == 7)
-                    numbertalk = 0;
-                */
-                num = Random(src);
+                if(!custom)
+                {
+                    num = numbertalk++;
+                    if(numbertalk == src.size())
+                        numbertalk = 0;
+                    System.out.println(num);
+                }
+                else
+                    num = Random(src);
 		if (src.get(num).length + currentlength <= maxlength)
 		{
 			b = true;
