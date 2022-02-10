@@ -44,7 +44,6 @@ public class GeneratePlaylist {
         public ArrayList<Type> music,talk;
         SecureRandom random;
         boolean debug = false;
-        int numbertalk;
         public GeneratePlaylist()
         {
             music = new ArrayList<Type>();
@@ -106,7 +105,6 @@ public class GeneratePlaylist {
             {
                 shedulewriter.write("Расписание работы радио\n");
                 ArrayList<Type>  vec;
-                numbertalk = 0;
                 for(int j=0;j<5;j++)
                 {
                     String str="";
@@ -261,8 +259,8 @@ public class GeneratePlaylist {
 		num = Random(src);
 		if (src.get(num).length + currentlength <= maxlength)
 		{
-			dst.add(src.get(num));
-			currentlength += dst.get(dst.size()-1).length;
+                    dst.add(src.get(num));
+                    currentlength += dst.get(dst.size()-1).length;
 		}
             }    
             for (int ii = 0; ii < src.size(); ii++)
@@ -270,8 +268,8 @@ public class GeneratePlaylist {
             {   
 		if (src.get(i).length + currentlength <= maxlength)
 		{
-			dst.add(src.get(i));
-			currentlength += dst.get(dst.size()-1).length;
+                    dst.add(src.get(i));
+                    currentlength += dst.get(dst.size()-1).length;
 		}
             }
             return currentlength;
@@ -290,12 +288,12 @@ public class GeneratePlaylist {
                 num = Random(src);
 		if (src.get(num).length + currentlength <= maxlength)
 		{
-			b = true;
-			dst.add(src.get(num));
-			currentlength += dst.get(dst.size()-1).length;
+                    b = true;
+                    dst.add(src.get(num));
+                    currentlength += dst.get(dst.size()-1).length;
 		}
 		if (!b)
-			AddTalk(src, dst, currentlength, maxlength);
+                    AddTalk(src, dst, currentlength, maxlength);
             }
             return currentlength;
         }
