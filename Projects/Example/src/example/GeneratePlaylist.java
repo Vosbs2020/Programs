@@ -43,14 +43,14 @@ public class GeneratePlaylist {
         }
         public ArrayList<Type> music,talk;
         SecureRandom random;
-        boolean debug = false;
         public GeneratePlaylist()
         {
             music = new ArrayList<Type>();
             talk = new ArrayList<Type>();
             random = new SecureRandom();
         }
-        public void LoadFromFiles() throws FileNotFoundException, UnsupportedEncodingException, IOException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException
+        public void LoadFromFiles(String nameShedule, String pathShedule, String[] nameDay, String pathDay
+                ) throws FileNotFoundException, UnsupportedEncodingException, IOException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException
         {
             try {
                 File file ;
@@ -101,9 +101,10 @@ public class GeneratePlaylist {
                 }
             Collections.sort(music);
             Collections.sort(talk);
-            try(Writer shedulewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("Расписание работы радио"+".txt"), "windows-1251")))
+            //try(Writer shedulewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("Расписание работы радио"+".txt"), "windows-1251")))
+            try(Writer shedulewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathShedule+nameShedule+".txt"), "windows-1251")))
             {
-                shedulewriter.write("Расписание работы радио\n");
+                shedulewriter.write(nameShedule+"\n");
                 ArrayList<Type>  vec;
                 for(int j=0;j<5;j++)
                 {
@@ -138,12 +139,10 @@ public class GeneratePlaylist {
                             str="playlist";
                         break;
                     }             
-                    float length = (float) 3640.0, currentlength = 0.0f;
+                    float length = (float) 3640.0, currentlength = 0.0f;//отсчитываем 1 час
                     vec = new ArrayList<Type> ();
                     currentlength = AddMusic(music, vec, currentlength, length);
-                    if(debug)
-                        System.out.println("\n+cl:"+ currentlength);
-                    length = (float) (2.5 * 3600.0+40.0);
+                    length = (float) (2.5 * 3600.0+40.0);//отсчитываем 2.5 часа и 40 секунд
                     currentlength = AddTalk(talk, vec, currentlength, length);
                     if((int)60 / (((int)currentlength)/60) == 0)
                         shedulewriter.write("10.00 – 10.");   
@@ -155,7 +154,7 @@ public class GeneratePlaylist {
                     File f = new File(path);
                     String fName = f.getName();
                     fName = fName.substring(0, fName.lastIndexOf('.'));
-                    shedulewriter.write("-\""+fName+"\"\n");  
+                    shedulewriter.write("-\""+fName+"\"\n");//записываем название разговора в расписание  
                     if((int)60 / (((int)currentlength)/60) == 0)
                         shedulewriter.write("10.");   
                     else
@@ -189,8 +188,6 @@ public class GeneratePlaylist {
                         break;
                     }   
                     shedulewriter.write("11.30 – 11."); 
-                    if(debug)
-                        System.out.println("\n+cl:" + currentlength);
                     length = (float) ((float) 10800.0+40.0);
                     currentlength = AddTalk(talk, vec, currentlength, length);
                     shedulewriter.write((Integer.toString(((int)currentlength/60) % 60)));
@@ -226,9 +223,8 @@ public class GeneratePlaylist {
                         break;
                     }
                     currentlength = AddMusic(music, vec, currentlength, length);
-                    if(debug)
-                        System.out.println("\n+cl:"+ currentlength);
-                    try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(str+".m3u8"), "windows-1251")))
+                    //try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(str+".m3u8"), "windows-1251")))
+                    try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathDay+nameDay[j]+".m3u8"), "windows-1251")))
                     {
                         writer.write("#EXTM3U\n");
                         for (int i = 0; i < vec.size(); i++)
