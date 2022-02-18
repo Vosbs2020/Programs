@@ -102,7 +102,7 @@ public class GeneratePlaylist {
             Collections.sort(music);
             Collections.sort(talk);
             //try(Writer shedulewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("Расписание работы радио"+".txt"), "windows-1251")))
-            try(Writer shedulewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathShedule+nameShedule+".txt"), "windows-1251")))
+            try(Writer shedulewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathShedule+"\\"+nameShedule+".txt"), "windows-1251")))
             {
                 shedulewriter.write(nameShedule+"\n");
                 ArrayList<Type>  vec;
@@ -224,7 +224,7 @@ public class GeneratePlaylist {
                     }
                     currentlength = AddMusic(music, vec, currentlength, length);
                     //try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(str+".m3u8"), "windows-1251")))
-                    try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathDay+nameDay[j]+".m3u8"), "windows-1251")))
+                    try(Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathDay+"\\"+nameDay[j]+".m3u8"), "windows-1251")))
                     {
                         writer.write("#EXTM3U\n");
                         for (int i = 0; i < vec.size(); i++)

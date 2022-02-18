@@ -205,7 +205,7 @@ implements Runnable		//(содержащее метод run())
 {
 	public void run()		//Этот метод будет выполняться в побочном потоке
 	{
-            System.out.println("Генерируются плейсты ждите...!");
+            System.out.println("Генерируются плейлисты ждите...!");
             count=0;
             listpaths = new ArrayList<String>();
             String currentWorkingDir;
