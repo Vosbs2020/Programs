@@ -246,6 +246,11 @@ public class GeneratePlaylist {
                 }
                 shedulewriter.close();
             }
+            catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
         }
         public float AddMusic(ArrayList<Type> src, ArrayList<Type> dst,float currentlength, float maxlength)
         {

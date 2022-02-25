@@ -112,6 +112,8 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jLabel8.setText("Путь к плейлистам");
 
+        jTextField8.setText(".");
+
         jLabel9.setText("Название расписания");
 
         jTextField9.setText("Расписание работы радио");
@@ -122,6 +124,8 @@ public class NewJFrame extends javax.swing.JFrame {
         });
 
         jLabel4.setText("Путь к расписанию");
+
+        jTextField10.setText(".");
 
         jLabel5.setText("Состояние генерации");
 
