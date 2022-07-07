@@ -1,0 +1,1 @@
+javac -encoding UTF-8 -cp .;jaudiotagger-2.2.6-SNAPSHOT.jar;jaudiotagger-2.2.6-SNAPSHOT-sources.jar -d . *.java

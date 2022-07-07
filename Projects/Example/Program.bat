@@ -1,0 +1,1 @@
+java -cp .;jaudiotagger-2.2.6-SNAPSHOT.jar;jaudiotagger-2.2.6-SNAPSHOT-sources.jar example.Example
