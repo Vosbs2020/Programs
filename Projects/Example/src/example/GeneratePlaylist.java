@@ -10,9 +10,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
@@ -41,15 +43,16 @@ public class GeneratePlaylist {
                 '}';
             }
         }
-        public ArrayList<Type> music,talk;
+        public ArrayList<Type> music,talk,daystalk;
         SecureRandom random;
         public GeneratePlaylist()
         {
             music = new ArrayList<Type>();
             talk = new ArrayList<Type>();
             random = new SecureRandom();
+            daystalk = new ArrayList<Type>();
         }
-        public void LoadFromFiles(String nameShedule, String pathShedule, String[] nameDay, String pathDay
+        public void LoadFromFiles(String nameShedule, String pathShedule, String[] nameDay, String pathDay,List<Boolean> days_t, List<String> days_t_path
                 ) throws FileNotFoundException, UnsupportedEncodingException, IOException, CannotReadException, TagException, ReadOnlyFileException, InvalidAudioFrameException
         {
             try {
@@ -101,8 +104,37 @@ public class GeneratePlaylist {
                 }
             Collections.sort(music);
             Collections.sort(talk);
+            for(int i=0;i<days_t_path.size();i++)
+                    if(days_t.get(i))
+                    {
+                        try {
+                            File file;
+                            file = new File("Playlist foot.m3u8");
+                            FileInputStream fStream = new FileInputStream(file);
+                            InputStreamReader fr;
+                            fr= new InputStreamReader(fStream, "windows-1251");
+                            BufferedReader reader = new BufferedReader(fr);
+                            Type tmp = new Type();
+                            tmp.length = (float) 0.0;
+                            tmp.name = "";
+                            String line = reader.readLine();
+                            while (line != null) {
+                                tmp.name = line;
+                                line = reader.readLine();
+                                tmp.length = Float.parseFloat(line);
+                                daystalk.add(tmp);
+                                line = reader.readLine();
+                                tmp = new Type();
+                            }
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                    break;
+                    }
             //try(Writer shedulewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("Расписание работы радио"+".txt"), "windows-1251")))
-            try(Writer shedulewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathShedule+"\\"+nameShedule+".txt"), "windows-1251")))
+            try(Writer shedulewriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathShedule+"\\"+nameShedule+".txt"), StandardCharsets.UTF_8)))
             {
                 shedulewriter.write(nameShedule+"\n");
                 ArrayList<Type>  vec;
@@ -113,27 +145,27 @@ public class GeneratePlaylist {
                         case 0:
                             str="понедельник";      
                             shedulewriter.write(str+"\n");
-                            shedulewriter.write("9.00 – 10.00 – музыка (Жанр:Heavy metal;)\n");
+                            shedulewriter.write("9.00 – 10.00 – музыка (Жанр:Heavy metal)\n");
                         break;
                         case 1:
                             str="вторник";
                             shedulewriter.write(str+"\n");
-                            shedulewriter.write("9.00 - 10.00 – музыка (Жанр: Blues;)\n");
+                            shedulewriter.write("9.00 - 10.00 – музыка (Жанр: Blues)\n");
                         break;
                         case 2:
                             str="среда";
                             shedulewriter.write(str+"\n");
-                            shedulewriter.write("9.00 - 10.00 – музыка (Жанр: Drum’n’bass;)\n");
+                            shedulewriter.write("9.00 - 10.00 – музыка (Жанр: Drum’n’bass)\n");
                         break;
                         case 3:
                             str="четверг";
                             shedulewriter.write(str+"\n");
-                            shedulewriter.write("9.00 - 10.00 – музыка (Жанр:Rock;)\n");
+                            shedulewriter.write("9.00 - 10.00 – музыка (Жанр:Rock)\n");
                         break;
                         case 4:
                             str="пятница";
                             shedulewriter.write(str+"\n");
-                            shedulewriter.write("9.00 - 10.00 – музыка (Жанр: Rap;)\n");
+                            shedulewriter.write("9.00 - 10.00 – музыка (Жанр: Rap)\n");
                         break;
                         default:
                             str="playlist";
@@ -143,7 +175,10 @@ public class GeneratePlaylist {
                     vec = new ArrayList<Type> ();
                     currentlength = AddMusic(music, vec, currentlength, length);
                     length = (float) (2.5 * 3600.0+40.0);//отсчитываем 2.5 часа и 40 секунд
-                    currentlength = AddTalk(talk, vec, currentlength, length);
+                    if(days_t.get(j))
+                        currentlength = AddTalk(daystalk, vec, currentlength, length);
+                    else                        
+                        currentlength = AddTalk(talk, vec, currentlength, length);
                     if((int)60 / (((int)currentlength)/60) == 0)
                         shedulewriter.write("10.00 – 10.");   
                     else
@@ -165,23 +200,23 @@ public class GeneratePlaylist {
                     switch(j){
                         case 0:
                             str="понедельник";      
-                            shedulewriter.write("музыка (Жанр: Rock;)\n");
+                            shedulewriter.write("музыка (Жанр: Rock)\n");
                         break;
                         case 1:
                             str="вторник";
-                            shedulewriter.write("музыка (Жанр: Electrohouse;)\n");
+                            shedulewriter.write("музыка (Жанр: Electrohouse)\n");
                         break;
                         case 2:
                             str="среда";
-                            shedulewriter.write("музыка (Жанр:Pop;)\n");
+                            shedulewriter.write("музыка (Жанр:Pop)\n");
                         break;
                         case 3:
                             str="четверг";
-                            shedulewriter.write("(Жанр: Reggae;)\n");
+                            shedulewriter.write("(Жанр: Reggae)\n");
                         break;
                         case 4:
                             str="пятница";
-                            shedulewriter.write("музыка (Жанр: Hip-hop;)\n");
+                            shedulewriter.write("музыка (Жанр: Hip-hop)\n");
                         break;
                         default:
                             str="playlist";
@@ -189,7 +224,10 @@ public class GeneratePlaylist {
                     }   
                     shedulewriter.write("11.30 – 11."); 
                     length = (float) ((float) 10800.0+40.0);
-                    currentlength = AddTalk(talk, vec, currentlength, length);
+                    if(days_t.get(j))
+                        currentlength = AddTalk(daystalk, vec, currentlength, length);
+                    else   
+                        currentlength = AddTalk(talk, vec, currentlength, length);
                     shedulewriter.write((Integer.toString(((int)currentlength/60) % 60)));
                     path = vec.get(vec.size()-1).name;
                     f = new File(path);
@@ -200,23 +238,23 @@ public class GeneratePlaylist {
                     switch(j){
                         case 0:
                             str="понедельник";      
-                            shedulewriter.write("(Жанр: Alternative;)\n");
+                            shedulewriter.write("(Жанр: Alternative)\n");
                         break;
                         case 1:
                             str="вторник";
-                            shedulewriter.write("(Жанр: Alternative;)\n");
+                            shedulewriter.write("(Жанр: Alternative)\n");
                         break;
                         case 2:
                             str="среда";
-                            shedulewriter.write("(Жанр:Blues;)\n");
+                            shedulewriter.write("(Жанр:Blues)\n");
                         break;
                         case 3:
                             str="четверг";
-                            shedulewriter.write(" (Жанр:Dubstep;)\n");
+                            shedulewriter.write(" (Жанр:Dubstep)\n");
                         break;
                         case 4:
                             str="пятница";
-                            shedulewriter.write("(Жанр: Rnb;)\n");
+                            shedulewriter.write("(Жанр: Rnb)\n");
                         break;
                         default:
                             str="playlist";
